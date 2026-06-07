@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pet Tech vs Bebés vs Wellness — Italia</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0A0A0F;
+  --surface: #13131A;
+  --surface2: #1A1A24;
+  --border: rgba(255,255,255,0.07);
+  --text: #F0EEE8;
+  --muted: rgba(240,238,232,0.42);
+  --accent: #00E896;
+  --red: #FF4545;
+  --blue: #35C9FF;
+  --yellow: #FFD135;
+  --purple: #B06CFF;
+}
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Instrument Sans', sans-serif;
+  font-weight: 400;
+  padding-bottom: 60px;
+}
+
+/* ── HEADER ── */
+.page-header {
+  padding: 36px 48px 28px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.brand { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--accent); letter-spacing:.15em; text-transform:uppercase; }
+.date  { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--muted); }
+
+/* ── HERO ── */
+.hero { padding: 40px 48px 0; }
+.hero-title {
+  font-family:'Instrument Serif',serif;
+  font-size: clamp(38px,5.5vw,68px);
+  line-height:1.02;
+  letter-spacing:-0.02em;
+  margin-bottom:10px;
+}
+.hero-title em { font-style:italic; color:var(--accent); }
+.hero-sub { font-size:14px; color:var(--muted); max-width:560px; line-height:1.6; }
+
+/* ── SECTION LABEL ── */
+.sec-label {
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:16px;
+}
+
+/* ── STAT STRIP ── */
+.stat-strip {
+  display:grid; grid-template-columns:repeat(4,1fr);
+  gap:1px; background:var(--border);
+  margin:32px 48px 0; border-radius:8px; overflow:hidden;
+  border:1px solid var(--border);
+}
+.stat-block {
+  background:var(--surface); padding:20px 22px; position:relative;
+}
+.stat-block::after {
+  content:''; position:absolute; bottom:0; left:0; width:100%; height:2px;
+}
+.stat-block:nth-child(1)::after { background:var(--accent); }
+.stat-block:nth-child(2)::after { background:var(--blue); }
+.stat-block:nth-child(3)::after { background:var(--yellow); }
+.stat-block:nth-child(4)::after { background:var(--red); }
+.stat-num {
+  font-family:'Instrument Serif',serif; font-size:34px; line-height:1; margin-bottom:4px;
+}
+.stat-block:nth-child(1) .stat-num { color:var(--accent); }
+.stat-block:nth-child(2) .stat-num { color:var(--blue); }
+.stat-block:nth-child(3) .stat-num { color:var(--yellow); }
+.stat-block:nth-child(4) .stat-num { color:var(--red); }
+.stat-lbl { font-size:12px; color:var(--muted); line-height:1.4; }
+.stat-src { font-family:'JetBrains Mono',monospace; font-size:9px; color:rgba(240,238,232,.18); margin-top:5px; display:block; }
+
+/* ── CHART CARD ── */
+.chart-card {
+  background:var(--surface); border:1px solid var(--border); border-radius:10px;
+  padding:28px 28px 20px; position:relative; overflow:hidden;
+}
+.chart-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:1px;
+  background:linear-gradient(90deg, var(--accent) 0%, transparent 60%);
+}
+.chart-title { font-size:13px; font-weight:500; margin-bottom:4px; }
+.chart-note  { font-size:11px; color:var(--muted); margin-bottom:18px; line-height:1.5; }
+canvas { display:block; width:100%; }
+
+/* ── CHARTS GRID ── */
+.charts-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.chart-section { padding:24px 48px 0; }
+
+/* ── CAGR BARS ── */
+.cagr-bars { display:flex; flex-direction:column; gap:12px; padding-top:4px; }
+.cagr-row { display:flex; align-items:center; gap:12px; }
+.cagr-label { font-size:12px; color:var(--muted); width:140px; flex-shrink:0; text-align:right; }
+.cagr-bar-wrap { flex:1; height:28px; background:rgba(255,255,255,0.04); border-radius:4px; overflow:hidden; position:relative; display:flex; align-items:center; }
+.cagr-bar { height:100%; border-radius:4px; display:flex; align-items:center; padding-left:10px; transition:width 1.2s cubic-bezier(.22,1,.36,1); }
+.cagr-val { font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:500; color:#fff; white-space:nowrap; }
+.cagr-neg-val { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--red); margin-left:8px; }
+
+/* ── SCORECARD ── */
+.scorecard { width:100%; border-collapse:collapse; }
+.scorecard th {
+  font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--muted);
+  padding:8px 14px; text-align:left; border-bottom:1px solid var(--border);
+}
+.scorecard th:not(:first-child) { text-align:center; }
+.scorecard td {
+  padding:10px 14px; font-size:12px; color:var(--muted);
+  border-bottom:1px solid rgba(255,255,255,0.04);
+}
+.scorecard td:not(:first-child) { text-align:center; }
+.scorecard tr.total td {
+  color:var(--text); font-weight:600; border-top:1px solid var(--border);
+  border-bottom:none; font-size:13px;
+}
+.scorecard tr:hover td { background:rgba(255,255,255,0.02); }
+.stars-green { color:var(--accent); font-size:13px; }
+.stars-red   { color:var(--red); font-size:13px; }
+.stars-mid   { color:var(--yellow); font-size:13px; }
+.total-green { color:var(--accent); font-family:'Instrument Serif',serif; font-size:22px; }
+.total-red   { color:var(--red);   font-family:'Instrument Serif',serif; font-size:22px; }
+.total-mid   { color:var(--yellow); font-family:'Instrument Serif',serif; font-size:22px; }
+
+/* ── INSIGHT ROW ── */
+.insight-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.insight-card {
+  background:var(--surface); border:1px solid var(--border); border-radius:10px;
+  padding:22px 24px; position:relative; overflow:hidden;
+}
+.insight-card::before {
+  content:''; position:absolute; top:0; left:0; width:3px; height:100%;
+}
+.insight-card.green::before  { background:var(--accent); }
+.insight-card.blue::before   { background:var(--blue); }
+.insight-card.yellow::before { background:var(--yellow); }
+.insight-card.red::before    { background:var(--red); }
+.ic-kicker {
+  font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.15em;
+  text-transform:uppercase; margin-bottom:8px;
+}
+.insight-card.green  .ic-kicker { color:var(--accent); }
+.insight-card.blue   .ic-kicker { color:var(--blue); }
+.insight-card.yellow .ic-kicker { color:var(--yellow); }
+.insight-card.red    .ic-kicker { color:var(--red); }
+.ic-title { font-family:'Instrument Serif',serif; font-size:19px; line-height:1.15; margin-bottom:8px; }
+.ic-body  { font-size:12px; color:var(--muted); line-height:1.6; }
+
+/* ── BANNER ── */
+.banner {
+  background:linear-gradient(135deg, #071A0F 0%, #050D1A 50%, #0D0510 100%);
+  border:1px solid rgba(0,232,150,.15); border-radius:10px;
+  padding:28px 32px; display:flex; align-items:center; justify-content:space-between; gap:24px;
+}
+.banner-left { font-family:'Instrument Serif',serif; font-size:24px; line-height:1.2; max-width:360px; }
+.banner-left em { font-style:italic; color:var(--accent); }
+.banner-right { font-size:13px; color:var(--muted); max-width:260px; line-height:1.65; flex-shrink:0; }
+
+/* ── LEGEND ── */
+.legend { display:flex; gap:16px; flex-wrap:wrap; margin-top:14px; padding-top:12px; border-top:1px solid var(--border); }
+.legend-item { display:flex; align-items:center; gap:6px; font-size:11px; color:var(--muted); }
+.ld { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+
+/* ── CANDIDATES ── */
+.cand-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.cand {
+  background:var(--surface); border:1px solid var(--border); border-radius:8px;
+  padding:15px 17px; transition:border-color .2s;
+}
+.cand:hover { border-color:rgba(255,255,255,.16); }
+.cand-n { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--accent); margin-bottom:5px; }
+.cand-name { font-size:13px; font-weight:500; margin-bottom:3px; line-height:1.3; }
+.cand-why  { font-size:11px; color:var(--muted); line-height:1.45; }
+
+/* ── FOOTER ── */
+.page-footer {
+  border-top:1px solid var(--border); padding:20px 48px;
+  display:flex; justify-content:space-between; align-items:center; margin-top:48px;
+}
+.pf-label { font-family:'JetBrains Mono',monospace; font-size:9px; color:rgba(240,238,232,.2); letter-spacing:.1em; text-transform:uppercase; }
+
+/* ── SPACING ── */
+.pad { padding:24px 48px 0; }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(14px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.hero        { animation:fadeUp .5s ease both; }
+.stat-strip  { animation:fadeUp .5s .08s ease both; }
+.chart-section:nth-of-type(1) { animation:fadeUp .5s .14s ease both; }
+.chart-section:nth-of-type(2) { animation:fadeUp .5s .20s ease both; }
+.pad         { animation:fadeUp .5s .26s ease both; }
+
+@media(max-width:720px){
+  .page-header,.hero,.stat-strip,.chart-section,.pad,.page-footer { padding-left:20px; padding-right:20px; }
+  .stat-strip { grid-template-columns:1fr 1fr; margin:24px 20px 0; }
+  .charts-2,.insight-row,.cand-grid { grid-template-columns:1fr; }
+  .banner { flex-direction:column; }
+  .banner-right { max-width:100%; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="page-header">
+  <div class="brand">Pet Tech · Analisi Strategica</div>
+  <div class="date">Giugno 2026 · Matias & Pao</div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-title">Il mercato che <em>cresce sempre.</em><br>Perché abbiamo scelto pet tech.</div>
+  <div class="hero-sub">Dati reali da NielsenIQ, Assalco-Zoomark, Mordor Intelligence, Global Wellness Institute. Nessuna stima interna.</div>
+</div>
+
+<!-- STAT STRIP -->
+<div class="stat-strip">
+  <div class="stat-block">
+    <div class="stat-num">€5,3B</div>
+    <div class="stat-lbl">Mercato pet Italia 2025 — omnicanale</div>
+    <span class="stat-src">Assalco-Zoomark XIX ed. 2026</span>
+  </div>
+  <div class="stat-block">
+    <div class="stat-num">+21%</div>
+    <div class="stat-lbl">CAGR smart pet tech globale fino al 2033</div>
+    <span class="stat-src">Market Growth Reports 2025</span>
+  </div>
+  <div class="stat-block">
+    <div class="stat-num">65M</div>
+    <div class="stat-lbl">Animali domestici in Italia vs 370K nascite/anno</div>
+    <span class="stat-src">Assalco-Zoomark + ISTAT 2025</span>
+  </div>
+  <div class="stat-block">
+    <div class="stat-num">–2,1%</div>
+    <div class="stat-lbl">CAGR baby products Italia fino al 2032</div>
+    <span class="stat-src">Global Market Insights 2025</span>
+  </div>
+</div>
+
+<!-- CHART 1: TIJERA DEMOGRÁFICA + CAGR COMPARISON -->
+<div class="chart-section" style="padding-top:28px;">
+  <div class="charts-2">
+
+    <!-- TIJERA -->
+    <div class="chart-card">
+      <div class="chart-title">Tijera Demografica — Italia</div>
+      <div class="chart-note">Il dato strutturale più importante: mascotas salgono mentre le nascite crollano.</div>
+      <canvas id="tijera" height="220"></canvas>
+      <div class="legend">
+        <div class="legend-item"><div class="ld" style="background:var(--red)"></div>Nascite (migliaia/anno)</div>
+        <div class="legend-item"><div class="ld" style="background:var(--accent)"></div>Mascotas (milioni)</div>
+      </div>
+    </div>
+
+    <!-- CAGR COMPARISON -->
+    <div class="chart-card">
+      <div class="chart-title">CAGR per Mercato — chi cresce, chi si contrae</div>
+      <div class="chart-note">Pet Tech globale a +15,5% contro baby products a –2,1% in Italia.</div>
+      <div class="cagr-bars" id="cagrBars">
+        <!-- filled by JS -->
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- CHART 2: PET ECONOMY GROWTH + ECOMMERCE -->
+<div class="chart-section">
+  <div class="charts-2">
+
+    <!-- PET ECONOMY ITALIA -->
+    <div class="chart-card">
+      <div class="chart-title">Pet Economy Italia 2014–2025 (+76% in 10 anni)</div>
+      <div class="chart-note">Crescita costante anche durante COVID e inflazione. Resilienza documentata.</div>
+      <canvas id="petGrowth" height="200"></canvas>
+      <div class="legend">
+        <div class="legend-item"><div class="ld" style="background:var(--accent)"></div>Pet Economy (€ mld)</div>
+        <div class="legend-item"><div class="ld" style="background:rgba(0,232,150,.25); border:1px dashed var(--accent)"></div>Proiezione</div>
+      </div>
+    </div>
+
+    <!-- ECOMMERCE -->
+    <div class="chart-card">
+      <div class="chart-title">E-commerce Pet Italia — +10,7% YoY 2024</div>
+      <div class="chart-note">Il canale più dinamico in Europa. Zooplus ha 1,1M visite/mese ma 56% bounce rate.</div>
+      <canvas id="ecommChart" height="200"></canvas>
+      <div class="legend">
+        <div class="legend-item"><div class="ld" style="background:var(--accent)"></div>Fatturato e-commerce pet (€M)</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SCORECARD -->
+<div class="chart-section">
+  <div class="chart-card">
+    <div class="chart-title">Scorecard Strategico — Pet Tech vs Bebés vs Wellness (1=debole, 5=forte)</div>
+    <div class="chart-note" style="margin-bottom:20px;">Il wellness è l'unico competitor serio, ma opera in uno spazio saturo dove il consumatore compara il prezzo. Il proprietario di animali no.</div>
+    <table class="scorecard">
+      <thead>
+        <tr>
+          <th>Criterio</th>
+          <th>Pet Tech</th>
+          <th>Bebés</th>
+          <th>Wellness</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Dimensione mercato Italia</td>
+          <td><span class="stars-green">★★★★★</span></td>
+          <td><span class="stars-red">★★☆☆☆</span></td>
+          <td><span class="stars-mid">★★★★☆</span></td>
+        </tr>
+        <tr>
+          <td>CAGR del mercato</td>
+          <td><span class="stars-green">★★★★★</span></td>
+          <td><span class="stars-red">★☆☆☆☆</span></td>
+          <td><span class="stars-mid">★★★★☆</span></td>
+        </tr>
+        <tr>
+          <td>Tendenza demografica</td>
+          <td><span class="stars-green">★★★★★</span></td>
+          <td><span class="stars-red">★★☆☆☆</span></td>
+          <td><span class="stars-mid">★★★★☆</span></td>
+        </tr>
+        <tr>
+          <td>Sensibilità al prezzo</td>
+          <td><span class="stars-green">★★★★★</span></td>
+          <td><span class="stars-mid">★★★☆☆</span></td>
+          <td><span class="stars-red">★★☆☆☆</span></td>
+        </tr>
+        <tr>
+          <td>Concorrenti specializzati in tech</td>
+          <td><span class="stars-green">★★★★☆</span></td>
+          <td><span class="stars-red">★★☆☆☆</span></td>
+          <td><span class="stars-mid">★★★★☆</span></td>
+        </tr>
+        <tr>
+          <td>Headroom crescita tech</td>
+          <td><span class="stars-green">★★★★★</span></td>
+          <td><span class="stars-red">★★☆☆☆</span></td>
+          <td><span class="stars-mid">★★★☆☆</span></td>
+        </tr>
+        <tr>
+          <td>Vincolo emotivo del compratore</td>
+          <td><span class="stars-green">★★★★★</span></td>
+          <td><span class="stars-mid">★★★★☆</span></td>
+          <td><span class="stars-mid">★★★☆☆</span></td>
+        </tr>
+        <tr class="total">
+          <td>TOTALE</td>
+          <td><span class="total-green">34/35</span></td>
+          <td><span class="total-red">16/35</span></td>
+          <td><span class="total-mid">24/35</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- INSIGHTS -->
+<div class="pad">
+  <div class="insight-row">
+    <div class="insight-card green">
+      <div class="ic-kicker">La tijera demografica</div>
+      <div class="ic-title">65M animali vs 370K nascite/anno</div>
+      <div class="ic-body">Non è una curiosità statistica. Con fertilità a 1,18 (minimo storico), il baby market proietta CAGR negativo fino al 2032. I produttori di culle del Nord Italia si stanno riconvertendo verso prodotti per anziani, avendo perso il 35–40% del mercato in 20 anni. La pet economy va in direzione opposta da un decennio.</div>
+    </div>
+    <div class="insight-card blue">
+      <div class="ic-kicker">Il gap di posizionamento</div>
+      <div class="ic-title">Zooplus: 1,1M visite/mese, 56% bounce</div>
+      <div class="ic-body">I leader dell'e-commerce pet in Italia (Zooplus, Arcaplanet) sono costruiti per il volume di alimenti. Chi cerca un collar GPS o un dispositivo smart non trova una destinazione chiara. Il mercato globale pet tech è passato da $8,3B (2022) a $15,6B (2025). L'Italia è il secondo mercato naturale più ovvio d'Europa.</div>
+    </div>
+    <div class="insight-card yellow">
+      <div class="ic-kicker">Mercato early in Italia</div>
+      <div class="ic-title">€2,1M investiti in pet tech — 2024</div>
+      <div class="ic-body">L'Italia ha appena iniziato. È esattamente la finestra che cerchiamo: prodotti che in Cina esistono già, distribuiti globalmente, ma senza un brand di riferimento nel mercato italiano. La Germania guida in Europa — l'Italia è il passo successivo ovvio.</div>
+    </div>
+    <div class="insight-card red">
+      <div class="ic-kicker">Modello economico</div>
+      <div class="ic-title">€75/mese di spesa media — e cresce</div>
+      <div class="ic-body">Il proprietario di animale italiano spende €75/mese (Nomisma): 36% veterinario, 32% alimenti premium, 20% accessori, 8% tech. L'8% in tech è la base di partenza — non il soffitto. Il segmento smart products cresce al 21% CAGR mentre il resto del mercato cresce al 7%.</div>
+    </div>
+  </div>
+</div>
+
+<!-- BANNER -->
+<div class="pad">
+  <div class="banner">
+    <div class="banner-left">Non una <em>pet store.</em><br>Una tech store<br>per il tuo animale.</div>
+    <div class="banner-right">Il cliente entra perché lo interessa la tecnologia — non perché ha bisogno di crocchette. Questo separa da Zooplus, Arcaplanet e tutto ciò che compete su volume e prezzo.</div>
+  </div>
+</div>
+
+<!-- CANDIDATES -->
+<div class="pad" style="padding-bottom:0;">
+  <div class="sec-label">Candidati attivi da validare</div>
+  <div class="cand-grid">
+    <div class="cand">
+      <div class="cand-n">01</div>
+      <div class="cand-name">Anti-ansia da separazione</div>
+      <div class="cand-why">1 cane su 7 in Italia — soluzione tech consumer assente nel mercato locale</div>
+    </div>
+    <div class="cand">
+      <div class="cand-n">02</div>
+      <div class="cand-name">Monitor del sonno</div>
+      <div class="cand-why">Indicatore precoce di malattia — gap tra raccomandazione veterinaria e prodotto disponibile</div>
+    </div>
+    <div class="cand">
+      <div class="cand-n">03</div>
+      <div class="cand-name">Wearable dolore/artrite</div>
+      <div class="cand-why">Razze grandi predisposte — proprietari già ad alta spesa veterinaria</div>
+    </div>
+    <div class="cand">
+      <div class="cand-n">04</div>
+      <div class="cand-name">Accesso riconoscimento facciale</div>
+      <div class="cand-why">Case multi-animale — problema logistico reale, soluzione tech differenziante</div>
+    </div>
+    <div class="cand">
+      <div class="cand-n">05</div>
+      <div class="cand-name">Collare sicurezza notturna</div>
+      <div class="cand-why">GPS basic coperto da Tractive — versione integrata salute+luce ancora aperta</div>
+    </div>
+    <div class="cand">
+      <div class="cand-n">06</div>
+      <div class="cand-name">Arricchimento cognitivo gatti</div>
+      <div class="cand-why">Gatti d'appartamento, stress cronico — nessun dispositivo soddisfacente in Italia</div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="page-footer">
+  <div class="pf-label">Fonti: NielsenIQ · Assalco-Zoomark · ISTAT · Global Wellness Institute · Casaleggio Associati · Mordor Intelligence · Nomisma · IntoTheMinds · Market Growth Reports</div>
+  <div class="pf-label">Prossimo passo → validazione candidati</div>
+</div>
+
+<script>
+window.addEventListener('load', function() {
+
+const DPR = window.devicePixelRatio || 1;
+
+function setupCanvas(id, h) {
+  const c = document.getElementById(id);
+  if (!c) return null;
+  const parent = c.parentElement;
+  const w = Math.max(parent.clientWidth - 56, 100);
+  c.style.width = w + 'px';
+  c.style.height = h + 'px';
+  c.width = w * DPR;
+  c.height = h * DPR;
+  const ctx = c.getContext('2d');
+  ctx.scale(DPR, DPR);
+  return { ctx, W: w, H: h };
+}
+
+// ── TIJERA ──
+(function() {
+  const s = setupCanvas('tijera', 220);
+  if (!s) return;
+  const { ctx, W, H } = s;
+  const pl=44, pr=20, pt=16, pb=40;
+  const cw=W-pl-pr, ch=H-pt-pb;
+
+  const nascite = [
+    {y:2010,v:546},{y:2012,v:534},{y:2014,v:503},{y:2016,v:474},
+    {y:2018,v:440},{y:2020,v:404},{y:2022,v:390},{y:2024,v:370}
+  ];
+  const mascotas = [
+    {y:2010,v:57},{y:2012,v:58},{y:2014,v:59},{y:2016,v:60},
+    {y:2018,v:61.5},{y:2020,v:63},{y:2022,v:64},{y:2024,v:65}
+  ];
+  const years = [2010,2012,2014,2016,2018,2020,2022,2024];
+
+  function xp(yr) { return pl + cw*(yr-2010)/14; }
+  function yn(v)  { return pt + ch - ch*(v-300)/(600-300); }
+  function ym(v)  { return pt + ch - ch*(v-55)/(70-55); }
+
+  let anim=0.01;
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    ctx.strokeStyle='rgba(255,255,255,0.05)'; ctx.lineWidth=1;
+    for(let i=0;i<=4;i++){
+      const y=pt+ch*(1-i/4);
+      ctx.beginPath(); ctx.moveTo(pl,y); ctx.lineTo(W-pr,y); ctx.stroke();
+    }
+    ctx.fillStyle='rgba(240,238,232,0.3)'; ctx.font='9px JetBrains Mono,monospace'; ctx.textAlign='center';
+    years.forEach(yr=>{ ctx.fillText(yr, xp(yr), H-8); });
+    ctx.fillStyle='rgba(255,69,69,0.5)'; ctx.textAlign='right'; ctx.font='9px JetBrains Mono,monospace';
+    [300,400,500,600].forEach(v=>{ ctx.fillText(v+'K', pl-5, yn(v)+3); });
+    ctx.fillStyle='rgba(0,232,150,0.5)'; ctx.textAlign='left';
+    [57,60,63,66].forEach(v=>{ ctx.fillText(v+'M', W-pr+4, ym(v)+3); });
+
+    const aN = Math.max(1, Math.ceil(nascite.length*anim));
+    const aM = Math.max(1, Math.ceil(mascotas.length*anim));
+    const nSlice = nascite.slice(0, aN);
+    const mSlice = mascotas.slice(0, aM);
+
+    // fill between
+    if(nSlice.length > 1 && mSlice.length > 1){
+      ctx.save();
+      ctx.globalAlpha=0.06; ctx.fillStyle='#fff';
+      ctx.beginPath();
+      ctx.moveTo(xp(nSlice[0].y), yn(nSlice[0].v));
+      nSlice.forEach(d=>ctx.lineTo(xp(d.y),yn(d.v)));
+      [...mSlice].reverse().forEach(d=>ctx.lineTo(xp(d.y),ym(d.v)));
+      ctx.closePath(); ctx.fill();
+      ctx.restore();
+    }
+
+    ctx.strokeStyle='#FF4545'; ctx.lineWidth=2.5; ctx.lineJoin='round';
+    ctx.beginPath();
+    nSlice.forEach((d,i)=>{ i===0?ctx.moveTo(xp(d.y),yn(d.v)):ctx.lineTo(xp(d.y),yn(d.v)); });
+    ctx.stroke();
+
+    ctx.strokeStyle='#00E896'; ctx.lineWidth=2.5;
+    ctx.beginPath();
+    mSlice.forEach((d,i)=>{ i===0?ctx.moveTo(xp(d.y),ym(d.v)):ctx.lineTo(xp(d.y),ym(d.v)); });
+    ctx.stroke();
+
+    if(anim>=1) {
+      [{d:nascite,c:'#FF4545',fn:yn,lbl:'370K'},{d:mascotas,c:'#00E896',fn:ym,lbl:'65M'}].forEach(({d,c,fn,lbl})=>{
+        const p=d[d.length-1];
+        ctx.beginPath(); ctx.arc(xp(p.y),fn(p.v),4,0,Math.PI*2);
+        ctx.fillStyle=c; ctx.fill();
+        ctx.fillStyle=c; ctx.font='bold 10px JetBrains Mono,monospace'; ctx.textAlign='center';
+        ctx.fillText(lbl, xp(p.y), fn(p.v)-10);
+      });
+      ctx.fillStyle='rgba(255,255,255,0.18)'; ctx.font='10px Instrument Sans,sans-serif';
+      ctx.textAlign='center';
+      ctx.fillText('↕ tijera demografica', xp(2017), yn(470));
+    }
+    if(anim<1){ anim=Math.min(anim+0.04,1); requestAnimationFrame(draw); }
+  }
+  draw();
+})();
+
+// ── CAGR BARS ──
+(function(){
+  const bars = [
+    { label:'Moda junior Italia',   val:-2.1, color:'#FF4545' },
+    { label:'Baby products Italia', val:-2.1, color:'#FF4545' },
+    { label:'Wellness Italia',      val:6.5,  color:'#FFD135' },
+    { label:'Pet Economy Italia',   val:7.6,  color:'#00E896' },
+    { label:'Pet Tech globale',     val:15.5, color:'#00E896' },
+  ];
+  const container = document.getElementById('cagrBars');
+  if (!container) return;
+  const maxVal = 17;
+
+  bars.forEach(b => {
+    const row = document.createElement('div');
+    row.className = 'cagr-row';
+    const isNeg = b.val < 0;
+    row.innerHTML = `
+      <div class="cagr-label">${b.label}</div>
+      <div class="cagr-bar-wrap">
+        ${isNeg
+          ? `<span class="cagr-neg-val">${b.val}%</span>`
+          : `<div class="cagr-bar" style="background:${b.color}22; width:0%; transition:width 1.3s cubic-bezier(.22,1,.36,1);">
+               <span class="cagr-val" style="color:${b.color}">+${b.val}%</span>
+             </div>`
+        }
+      </div>`;
+    container.appendChild(row);
+    if(!isNeg){
+      setTimeout(()=>{
+        const bar = row.querySelector('.cagr-bar');
+        if(bar) bar.style.width = (b.val/maxVal*100)+'%';
+      }, 300);
+    }
+  });
+})();
+
+// ── PET GROWTH ──
+(function(){
+  const s = setupCanvas('petGrowth', 200);
+  if (!s) return;
+  const { ctx, W, H } = s;
+  const pl=36, pr=10, pt=16, pb=36;
+  const cw=W-pl-pr, ch=H-pt-pb;
+
+  const data = [
+    {y:2014,v:3.0,proj:false},{y:2015,v:3.2,proj:false},{y:2016,v:3.3,proj:false},
+    {y:2017,v:3.5,proj:false},{y:2018,v:3.7,proj:false},{y:2019,v:3.9,proj:false},
+    {y:2020,v:4.0,proj:false},{y:2021,v:4.2,proj:false},{y:2022,v:4.5,proj:false},
+    {y:2023,v:4.8,proj:false},{y:2024,v:5.1,proj:false},{y:2025,v:5.3,proj:false},
+    {y:2026,v:5.7,proj:true},{y:2027,v:6.0,proj:true},{y:2028,v:6.2,proj:true}
+  ];
+  const minY=2014, maxY=2028, maxV=7;
+
+  function xp(yr){ return pl+cw*(yr-minY)/(maxY-minY); }
+  function yv(v){ return pt+ch-ch*v/maxV; }
+
+  let anim=0.01;
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    ctx.strokeStyle='rgba(255,255,255,0.05)'; ctx.lineWidth=1;
+    [2,4,6].forEach(v=>{ const y=yv(v); ctx.beginPath(); ctx.moveTo(pl,y); ctx.lineTo(W-pr,y); ctx.stroke(); });
+    ctx.fillStyle='rgba(240,238,232,0.3)'; ctx.font='9px JetBrains Mono,monospace'; ctx.textAlign='right';
+    [2,4,6].forEach(v=>{ ctx.fillText('€'+v+'B', pl-5, yv(v)+3); });
+    ctx.textAlign='center';
+    [2014,2018,2022,2026].forEach(yr=>{ ctx.fillText(yr, xp(yr), H-6); });
+
+    const cnt = Math.max(2, Math.ceil(data.length*anim));
+    const vis = data.slice(0, cnt);
+    const last = vis[vis.length-1];
+
+    // area fill
+    const g=ctx.createLinearGradient(0,pt,0,pt+ch);
+    g.addColorStop(0,'rgba(0,232,150,0.18)'); g.addColorStop(1,'rgba(0,232,150,0)');
+    ctx.fillStyle=g;
+    ctx.beginPath();
+    vis.forEach((d,i)=>{ i===0?ctx.moveTo(xp(d.y),yv(d.v)):ctx.lineTo(xp(d.y),yv(d.v)); });
+    ctx.lineTo(xp(last.y),pt+ch); ctx.lineTo(xp(vis[0].y),pt+ch); ctx.closePath(); ctx.fill();
+
+    // solid
+    const solid=vis.filter(d=>!d.proj);
+    if(solid.length){
+      ctx.strokeStyle='#00E896'; ctx.lineWidth=2.5; ctx.setLineDash([]);
+      ctx.beginPath(); solid.forEach((d,i)=>{ i===0?ctx.moveTo(xp(d.y),yv(d.v)):ctx.lineTo(xp(d.y),yv(d.v)); }); ctx.stroke();
+    }
+    // dashed projection
+    const proj=vis.filter(d=>d.proj);
+    if(proj.length && solid.length){
+      ctx.setLineDash([5,5]); ctx.lineWidth=2; ctx.strokeStyle='#00E896';
+      ctx.beginPath();
+      const ls=solid[solid.length-1]; ctx.moveTo(xp(ls.y),yv(ls.v));
+      proj.forEach(d=>ctx.lineTo(xp(d.y),yv(d.v))); ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    if(anim>=1){
+      ctx.fillStyle='rgba(0,232,150,0.7)'; ctx.font='bold 11px JetBrains Mono,monospace'; ctx.textAlign='center';
+      ctx.fillText('+76% in 10 anni', xp(2019), yv(5.8));
+      ctx.beginPath(); ctx.arc(xp(last.y),yv(last.v),4,0,Math.PI*2);
+      ctx.fillStyle='#00E896'; ctx.fill();
+      ctx.fillStyle='rgba(240,238,232,0.7)'; ctx.textAlign='left';
+      ctx.fillText('€'+last.v+'B', xp(last.y)+7, yv(last.v)+3);
+    }
+    if(anim<1){ anim=Math.min(anim+0.035,1); requestAnimationFrame(draw); }
+  }
+  draw();
+})();
+
+// ── ECOMMERCE ──
+(function(){
+  const s = setupCanvas('ecommChart', 200);
+  if (!s) return;
+  const { ctx, W, H } = s;
+  const pl=40, pr=10, pt=16, pb=36;
+  const cw=W-pl-pr, ch=H-pt-pb;
+
+  const data = [
+    {y:2020,v:130,pct:null},
+    {y:2021,v:170,pct:'+31%'},
+    {y:2022,v:195,pct:'+15%'},
+    {y:2023,v:242,pct:'+24%'},
+    {y:2024,v:259,pct:'+7%'},
+  ];
+  const maxV=310;
+  const n=data.length;
+
+  function xp(i){ return pl + cw*i/(n-1); }
+  function yv(v){ return pt+ch-ch*v/maxV; }
+
+  let anim=0.01;
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    ctx.strokeStyle='rgba(255,255,255,0.05)'; ctx.lineWidth=1;
+    [100,200,300].forEach(v=>{ const y=yv(v); ctx.beginPath(); ctx.moveTo(pl,y); ctx.lineTo(W-pr,y); ctx.stroke(); });
+    ctx.fillStyle='rgba(240,238,232,0.3)'; ctx.font='9px JetBrains Mono,monospace'; ctx.textAlign='right';
+    [100,200,300].forEach(v=>{ ctx.fillText('€'+v+'M', pl-5, yv(v)+3); });
+
+    const bw=Math.min(cw/n*0.5, 40);
+    data.forEach((d,i)=>{
+      const x=xp(i);
+      const barH=Math.max(0, ch*d.v/maxV*anim);
+      const by=pt+ch-barH;
+      const grd=ctx.createLinearGradient(0,by,0,by+barH);
+      grd.addColorStop(0,'rgba(0,232,150,0.9)'); grd.addColorStop(1,'rgba(0,232,150,0.35)');
+      ctx.fillStyle=grd;
+      ctx.beginPath();
+      if(ctx.roundRect) ctx.roundRect(x-bw/2,by,bw,barH,3);
+      else ctx.rect(x-bw/2,by,bw,barH);
+      ctx.fill();
+
+      ctx.fillStyle='rgba(240,238,232,0.35)'; ctx.textAlign='center'; ctx.font='9px JetBrains Mono,monospace';
+      ctx.fillText(d.y, x, H-6);
+
+      if(anim>=0.95){
+        ctx.fillStyle='rgba(240,238,232,0.85)'; ctx.font='bold 10px Instrument Sans,sans-serif'; ctx.textAlign='center';
+        ctx.fillText('€'+d.v+'M', x, by-16);
+        if(d.pct){
+          ctx.fillStyle='rgba(0,232,150,0.8)'; ctx.font='9px JetBrains Mono,monospace';
+          ctx.fillText(d.pct, x, by-5);
+        }
+      }
+    });
+    if(anim<1){ anim=Math.min(anim+0.04,1); requestAnimationFrame(draw); }
+  }
+  draw();
+})();
+
+}); // end window.onload
+</script>
+</body>
+</html>
