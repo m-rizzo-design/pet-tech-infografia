@@ -189,9 +189,21 @@ canvas { display:block; width:100%; }
 /* ── FOOTER ── */
 .page-footer {
   border-top:1px solid var(--border); padding:20px 48px;
-  display:flex; justify-content:space-between; align-items:center; margin-top:48px;
+  margin-top:48px;
 }
-.pf-label { font-family:'JetBrains Mono',monospace; font-size:9px; color:rgba(240,238,232,.2); letter-spacing:.1em; text-transform:uppercase; }
+.pf-sources {
+  display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px;
+  font-family:'JetBrains Mono',monospace; font-size:10px;
+  letter-spacing:.08em; text-transform:uppercase;
+}
+.pf-label { color:rgba(255,255,255,0.5); }
+.pf-sources a {
+  color:rgba(255,255,255,0.5);
+  text-decoration:none;
+  transition:color .2s;
+}
+.pf-sources a:hover { color:rgba(255,255,255,0.85); text-decoration:underline; }
+.pf-sep { color:rgba(255,255,255,0.25); }
 
 /* ── SPACING ── */
 .pad { padding:24px 48px 0; }
@@ -413,7 +425,26 @@ canvas { display:block; width:100%; }
 
 <!-- FOOTER -->
 <div class="page-footer">
-  <div class="pf-label">Fonti: NielsenIQ · Assalco-Zoomark · ISTAT · Global Wellness Institute · Casaleggio Associati · Mordor Intelligence · Nomisma · IntoTheMinds · Market Growth Reports</div>
+  <div class="pf-sources">
+    <span class="pf-label">Fonti:</span>
+    <a href="https://nielseniq.com/global/it/news-center/2025/niq-il-pet-care-food-in-italia-vale-36-miliardi-di-euro-secondo-le-nuove-rilevazioni/" target="_blank" rel="noopener">NielsenIQ</a>
+    <span class="pf-sep">·</span>
+    <a href="https://www.assalco.it/pagina29_il-rapporto-assalco-zoomark.html" target="_blank" rel="noopener">Assalco-Zoomark</a>
+    <span class="pf-sep">·</span>
+    <a href="https://www.servizidemografici.com/natalita-in-calo-nel-2024-meno-di-370mila-nati-in-italia/" target="_blank" rel="noopener">ISTAT</a>
+    <span class="pf-sep">·</span>
+    <a href="https://globalwellnessinstitute.org/press-room/press-releases/new-research-from-the-global-wellness-institute-ranks-italy-among-the-worlds-top-10-wellness-economies-valued-at-140-6-billion/" target="_blank" rel="noopener">Global Wellness Institute</a>
+    <span class="pf-sep">·</span>
+    <a href="https://globalpetindustry.com/article/e-commerce-expansion-boosts-italian-pet-businesses/" target="_blank" rel="noopener">Casaleggio Associati</a>
+    <span class="pf-sep">·</span>
+    <a href="https://www.mordorintelligence.com/industry-reports/pet-tech-market" target="_blank" rel="noopener">Mordor Intelligence</a>
+    <span class="pf-sep">·</span>
+    <a href="https://www.petb2b.it/nomisma-gli-italiani-spendono-per-i-pet-fino-a-900-euro-lann/" target="_blank" rel="noopener">Nomisma</a>
+    <span class="pf-sep">·</span>
+    <a href="https://www.intotheminds.com/blog/en/pet-tech/" target="_blank" rel="noopener">IntoTheMinds</a>
+    <span class="pf-sep">·</span>
+    <a href="https://www.researchnester.com/reports/pet-tech-market/4743" target="_blank" rel="noopener">Market Growth Reports</a>
+  </div>
 </div>
 
 <script>
